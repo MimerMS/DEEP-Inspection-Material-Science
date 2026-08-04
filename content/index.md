@@ -9,19 +9,23 @@ General intro to this course. More descriptions
 - XXX
 :::
 
+<!--
 ```{csv-table}
 :delim: ;
 :widths: auto
 
 20 min ; {doc}`filename`
 ```
+-->
 
+<!--
 ```{toctree}
 :caption: Software Setup
 :maxdepth: 1
 
 episodes/0-Software-Setup
 ```
+-->
 
 
 ```{toctree}
@@ -30,6 +34,8 @@ episodes/0-Software-Setup
 
 episodes/3-TL-VGG-ResNet-ViT-lesson
 ```
+
+
 
 
 ```{toctree}
