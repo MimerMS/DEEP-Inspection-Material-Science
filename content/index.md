@@ -32,6 +32,7 @@ episodes/0-Software-Setup
 :caption: Episodes
 :maxdepth: 1
 
+episodes/2-CNN-LeNet-AlexNet-lesson
 episodes/3-TL-VGG-ResNet-ViT-lesson
 ```
 
