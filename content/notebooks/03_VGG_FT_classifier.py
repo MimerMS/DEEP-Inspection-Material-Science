@@ -26,10 +26,6 @@
 #
 # ## Transfer Learning Approach
 
-# VGG_classifier: 
-# Pre-trained VGG16 CNN is used as a feature extractor to learn general visual patterns such as edges and textures. 
-# A new classification layer is added to adapt the model for four-class defect classification.
-
 # VGG_FT_ classifier: 
 # The model is trained using:
 # - Fine-tuning: Unfreeze selected layers to improve adaptation to steel defects (last conv block-block5-unfrozen for fine-tuning)
@@ -193,14 +189,14 @@ def correct(output, target):
 
 
 ## Transfer Learning with VGG16 - last conv block (block5) unfrozen for fine-tuning 
-class VGG16_FT(nn.Module):
+class VGG16_FT_Model(nn.Module):
     """
     VGG16 transfer learning with block5 fine-tuning.
     Block5 is unfrozen while earlier convolution layers stay frozen.
     """
 
     def __init__(self, num_classes, unfreeze_layer=24):
-        super(VGG16_FT, self).__init__()
+        super(VGG16_FT_Model, self).__init__()
 
         # Load pretrained VGG16
         self.vgg16 = models.vgg16(
@@ -345,7 +341,7 @@ def main() -> None:
     train_loader, val_loader, test_loader = prepare_loaders(dataset_path)
    
     # Unfreeze the last conv block for fine-tuning
-    model_vgg16_ft = VGG16_FT(num_classes=len(class_names)).to(device)
+    model_vgg16_ft = VGG16_FT_Model(num_classes=len(class_names)).to(device)
     
     # Model summary
     print("VGG16 Fine-Tuning Model (block5 unfrozen)")
@@ -383,8 +379,9 @@ def main() -> None:
     )
 
     end_time = time.time()
-    print(f"\nTotal training time: {(end_time - start_time):.2f} seconds")
-    print(f"Average time per epoch: {(end_time - start_time) / num_epochs:.2f} seconds")
+    training_time = end_time - start_time
+    print(f"\nTotal training time: {training_time:.2f} seconds")
+    print(f"Average time per epoch: {training_time / num_epochs:.2f} seconds")
 
     # Save trained model
     storage_path = os.environ.get("STORAGE", ".")
@@ -397,6 +394,7 @@ def main() -> None:
         {
             "model_state_dict": model_vgg16_ft.state_dict(),
             "history": history_vgg16_ft,
+            "training_time": training_time,
         },
         model_path,
     )

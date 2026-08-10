@@ -26,13 +26,9 @@
 #
 # ## Transfer Learning Approach
 
-# VGG_classifier: 
-# Pre-trained VGG16 CNN is used as a feature extractor to learn general visual patterns such as edges and textures. 
-# A new classification layer is added to adapt the model for four-class defect classification.
-
-# VGG_FT_ classifier: 
-# The model is trained using:
-# - Fine-tuning: Unfreeze selected layers to improve adaptation to steel defects (last conv block-block5-unfrozen for fine-tuning)
+# 03_ResNet_classifier.py
+# Pre-trained ResNet50 with ImageNet-1K V2 weights is used as a feature
+# extractor, with a new classification head for four-class defect classification.
 
 
 
@@ -336,8 +332,9 @@ def main() -> None:
     )
 
     end_time = time.time()
-    print(f"\nTotal training time: {(end_time - start_time):.2f} seconds")
-    print(f"Average time per epoch: {(end_time - start_time) / num_epochs:.2f} seconds")
+    training_time = end_time - start_time
+    print(f"\nTotal training time: {training_time:.2f} seconds")
+    print(f"Average time per epoch: {training_time / num_epochs:.2f} seconds")
 
     # Save trained model
     storage_path = os.environ.get("STORAGE", ".")
@@ -350,6 +347,7 @@ def main() -> None:
         {
             "model_state_dict": model_resnet50.state_dict(),
             "history": history_resnet,
+             "training_time": training_time,
         },
         model_path,
     )

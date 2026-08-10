@@ -189,22 +189,25 @@ def correct(output, target):
     return correct_ones.sum().item()
 
 
-# Build Mobilenet_V2 Transfer Learning Model
-class MobileNet_Model(nn.Module):
-    def __init__(self, num_classes):
-        super(MobileNet_Model, self).__init__()
+# Build ViT Transfer Learning Model
+class ViTTransfer_Model(nn.Module):
+    """Pretrained ViT-B/16 with a frozen backbone and a new classifier head.
 
-        # Load pretrained MobilNet
-        self.mobilenet = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
+    torchvision's ViT-B/16 expects 224x224 input, but our pipeline uses
+    IMAGE_SIZE=255, so we resize inside forward() to keep the data pipeline
+    untouched and consistent with the other models.
+    """
+    def __init__(self, num_classes):
+        super().__init__()
+        self.vit = models.vit_b_16(weights=models.ViT_B_16_Weights.IMAGENET1K_V1)
 
         # Freeze all pretrained layers
-        for param in self.mobilenet.parameters():
+        for param in self.vit.parameters():
             param.requires_grad = False
 
-        # Replace original ImageNet classifier
-        in_features = self.mobilenet.classifier[1].in_features
-
-        self.mobilenet.classifier = nn.Sequential(
+        # ViT's classifier lives in `heads.head`; replace it
+        in_features = self.vit.heads.head.in_features   # 768 for ViT-B/16
+        self.vit.heads.head = nn.Sequential(
             nn.Dropout(0.3),
             nn.Linear(in_features, 256),
             nn.ReLU(),
@@ -213,8 +216,10 @@ class MobileNet_Model(nn.Module):
         )
 
     def forward(self, x):
-        x = self.mobilenet(x)
-        return x
+        # Resize 255 -> 224 to match ViT's fixed patch/positional embeddings
+        x = torch.nn.functional.interpolate(x, size=224, mode="bilinear", align_corners=False)
+        return self.vit(x)
+
 
 def train_model(model, train_loader, val_loader, optimizer, criterion, epochs, device, model_name="Model"):
     history = {"loss": [], "accuracy": [], "val_loss": [], "val_accuracy": []}
@@ -301,42 +306,35 @@ def test(test_loader, model, criterion):
 def main() -> None:
     dataset_path = get_dataset_path()
     class_names = get_class_names(dataset_path)
-    train_loader, val_loader, test_loader = prepare_loaders(dataset_path)
-   
-
-    # MobileNet_V2 Transfer Learning Model
-    model_mobilenet = MobileNet_Model(num_classes=len(class_names)).to(device)
-        
+    train_loader, val_loader, test_loader = prepare_loaders(dataset_path)          
+    model_vit = ViTTransfer_Model(num_classes=len(class_names)).to(device)    
     summary(
-        model_mobilenet,
+        model_vit,
         input_size=(1,3,224,224),
         depth=10,
-        col_names=[
-            "input_size",
-            "output_size",
-            "kernel_size",
-            "num_params"
-        ]
-    )
+        col_names=["input_size", "output_size", "kernel_size", "num_params"])
 
-    criterion = nn.CrossEntropyLoss()        
-    optimizer_mobilenet = optim.Adam( model_mobilenet.mobilenet.classifier.parameters(),lr=0.001)
+    
+    criterion = nn.CrossEntropyLoss()
+    # Only the new head params require grad, so pass those to the optimizer
+    optimizer_vit_tl = optim.Adam(
+        [p for p in model_vit.parameters() if p.requires_grad], lr=0.001)
+    
     num_epochs = EPOCHS
     start_time = time.time()
-    print("Training ResNet50 Transfer Learning Model...")
-
-    # Model training
-    history_mobilnet = train_model(
-        model_mobilenet,
+    print("Training ViT Transfer Learning Model...")
+    
+    history_vit_tl = train_model(
+        model_vit ,
         train_loader,
         val_loader,
-        optimizer_mobilenet,
+        optimizer_vit_tl,
         criterion,
         num_epochs,
         device,
-        "MobileNet"
+        "ViT"
     )
-
+    
     end_time = time.time()
     training_time = end_time - start_time
     print(f"\nTotal training time: {training_time:.2f} seconds")
@@ -347,12 +345,12 @@ def main() -> None:
     model_dir = os.path.join(storage_path, "models")
     os.makedirs(model_dir, exist_ok=True)
 
-    model_path = os.path.join(model_dir, "mobilenet_defect_classifier.pth")
+    model_path = os.path.join(model_dir, "vit_defect_classifier.pth")
 
     torch.save(
         {
-            "model_state_dict": model_mobilenet.state_dict(),
-            "history": history_mobilnet,
+            "model_state_dict": model_vit.state_dict(),
+            "history": history_vit_tl,
             "training_time": training_time,
         },
         model_path,
@@ -360,7 +358,7 @@ def main() -> None:
     print(f"Model and history saved to: {model_path}")
 
     # Model validation
-    test_ret = test(test_loader, model_mobilenet, criterion)
+    test_ret = test(test_loader, model_vit, criterion)
     print(f"\nTesting: loss: {test_ret['loss']:.6f} accuracy: {test_ret['accuracy']:.2%}")
 
 if __name__ == "__main__":

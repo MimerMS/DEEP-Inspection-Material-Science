@@ -197,7 +197,7 @@ class GoogleLeNet_Model(nn.Module):
     def __init__(self, num_classes):
         super(GoogleLeNet_Model, self).__init__()
 
-        # Load pretrained GoogleLeNet
+        # Load pretrained GoogLeNet
         self.googlenet = models.googlenet(
             weights=models.GoogLeNet_Weights.IMAGENET1K_V1,
             aux_logits=True
@@ -218,13 +218,14 @@ class GoogleLeNet_Model(nn.Module):
             nn.Linear(256, num_classes)
         )
 
-        # Disable auxiliary classifiers for transfer learning
-        self.googlenet.aux1 = None
-        self.googlenet.aux2 = None
-
     def forward(self, x):
-        x = self.googlenet(x)
-        return x
+        output = self.googlenet(x)
+
+        if hasattr(output, "logits"):
+            return output.logits
+
+        return output
+        
 
 def train_model(model, train_loader, val_loader, optimizer, criterion, epochs, device, model_name="Model"):
     history = {"loss": [], "accuracy": [], "val_loss": [], "val_accuracy": []}
@@ -341,8 +342,9 @@ def main() -> None:
     )
 
     end_time = time.time()
-    print(f"\nTotal training time: {(end_time - start_time):.2f} seconds")
-    print(f"Average time per epoch: {(end_time - start_time) / num_epochs:.2f} seconds")
+    training_time = end_time - start_time
+    print(f"\nTotal training time: {training_time:.2f} seconds")
+    print(f"Average time per epoch: {training_time / num_epochs:.2f} seconds")
 
     # Save trained model
     storage_path = os.environ.get("STORAGE", ".")
@@ -355,6 +357,7 @@ def main() -> None:
         {
             "model_state_dict": model_googlenet.state_dict(),
             "history": history_googlenet,
+            "training_time": training_time,
         },
         model_path,
     )
