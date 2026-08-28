@@ -50,14 +50,25 @@ guide
 
 ## Learning outcomes
 
-FIXME
+This material is for practitioners and researchers in materials science and industrial inspection
+who want to apply deep learning to surface defect analysis. No prior deep learning experience is required,
+but familiarity with Python is assumed. The techniques covered transfer directly to related domains
+such as electron microscopy, medical imaging, crystallography, and broader manufacturing quality control.
 
-This material is for ...
+By the end of this workshop, learners should be able to:
 
-By the end of this module, learners should:
-
-- ...
-- ...
+- Explain the two core assumptions behind CNNs (translation invariance and locality) and why they
+  make convolution more parameter-efficient than fully connected layers
+- Describe and distinguish four computer vision paradigms: anomaly detection, image classification,
+  object detection, and image segmentation, and identify which is appropriate for a given inspection task
+- Apply transfer learning (feature extraction and fine-tuning) with pretrained CNN and transformer
+  architectures (VGG, ResNet, ViT) to a new defect classification dataset
+- Explain how PatchCore detects anomalies without labeled defect examples, and contrast this with
+  supervised classifiers and their open-set failure modes
+- Understand the YOLO family's progression from two-stage pipelines to single-pass anchor-free detection,
+  and apply YOLO11 to both object detection and instance segmentation tasks
+- Distinguish semantic segmentation (U-Net, SegFormer) from instance segmentation (YOLO11-seg) and
+  select the appropriate architecture for a given materials inspection scenario
 
 
 ## See also
