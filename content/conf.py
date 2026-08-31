@@ -13,15 +13,15 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "DEEP Inspection for Materials Science – Classification"
+project = "DEEP Inspection for Materials Science"
 author = "\
 The contributors, \
 xxx, \
 xxx, \
 Ruiwen XIE"
-copyright = f"2026, Mimer AI Factory, {author}"
+copyright = f"2026, Sweden AI Factory, {author}"
 
-github_user = "mimer-ai"
+github_user = "sweden-ai-factory"
 github_repo_name = ""  # auto-detected from dirname if blank
 github_version = "main"
 conf_py_path = "/content/"  # with leading and trailing slash
@@ -93,13 +93,13 @@ html_theme = "furo"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = ["overrides.css"]
-html_favicon = str((HERE / "_static" / "favicon.png").resolve())
+html_favicon = str((HERE / "_static" / "swe-aif.png").resolve())
 github_repo_url = (
     f"https://github.com/mimer-ai/{github_repo_name or detected_repo_name}"
 )
 html_theme_options = {
-    "light_logo": "Mimer_logo_light.png",
-    "dark_logo": "Mimer_logo_dark.png",
+    "light_logo": "swe-aif.png",
+    "dark_logo": "swe-aif.png",
     "source_repository": github_repo_url,
     "source_branch": github_version,
     "source_directory": conf_py_path,
