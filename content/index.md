@@ -32,7 +32,7 @@ episodes/0-Software-Setup
 :caption: Episodes
 :maxdepth: 1
 
-
+episodes/0-setup
 episodes/1-AnomalyDetection_PatchCore-lesson
 episodes/2-CNN-LeNet-AlexNet-lesson
 episodes/3-TL-VGG-ResNet-ViT-lesson
