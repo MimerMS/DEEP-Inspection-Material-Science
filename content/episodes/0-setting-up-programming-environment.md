@@ -1,5 +1,5 @@
 
-## Setup
+## Setup enviornment
 
 ### Setup on LUMI Supercomputer
 You should now be able to login to LUMI via On-demand interface [web interface](https://www.lumi.csc.fi/pun/sys/dashboard/). Click the `Go to login` button and you can choose Jupyter.
@@ -170,5 +170,6 @@ This should output the versions of all required packages without giving errors. 
 **Alternatively** you can use [Google colab](https://colab.research.google.com/). If you open a jupyter notebook here, most of the required packages are already pre-installed. Note that google colab uses jupyter notebook instead of Jupyter Lab.
 
 ## Downloading the required datasets
+Severstal: Steel Defect Detection is a dataset from the 2019 Kaggle Challenge [Severstal](https://www.kaggle.com/c/severstal-steel-defect-detection), designed for surface defect detection tasks, including multiclass object detection, instance segmentation, and semantic segmentation.
 
-Download the ... 
+In this workshop, we use the original dataset and select a subset of images for the exercises. The prepared dataset for this workshop can be downloaded from the following link: [data](https://uppsalauniversitet-my.sharepoint.com/:f:/g/personal/marzieh_saeedimasine_uppmax_uu_se/IgC95jx7o7ZlS7qiSxkQ0UyvAc4RoIzzJXtkeOQOUEnDN7k?e=1tnauL)

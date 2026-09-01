@@ -32,7 +32,6 @@ episodes/0-setting-up-programming-environment
 :maxdepth: 1
 
 <<<<<<< HEAD
-episodes/0-setup
 =======
 >>>>>>> db201f0a3e8839550ac2b0f51fd9bbd8767f07ca
 episodes/1-AnomalyDetection_PatchCore-lesson
