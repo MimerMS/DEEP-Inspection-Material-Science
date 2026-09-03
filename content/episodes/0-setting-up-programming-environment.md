@@ -1,5 +1,5 @@
 
-## Setup enviornment
+## Setup Enviornment
 
 ### Setup on LUMI Supercomputer
 You should now be able to login to LUMI via On-demand interface [web interface](https://www.lumi.csc.fi/pun/sys/dashboard/). Click the `Go to login` button and you can choose Jupyter.
@@ -43,9 +43,25 @@ export JUPYTER_RUNTIME_DIR=$HOME/.local/share/jupyter/runtime; export JUPYTER_DA
 ```
 
 - **Enable virtual environment**: 1
-- **Virtual environment path**: `/projappl/project_465002387/DEEP_Inspection_Material_Science/workshopvenv`
+- **Virtual environment path**:
+``` 
+/projappl/project_465002387/DEEP_Inspection_Material_Science/workshopvenv
+```
 
-Now launch! A "Connect to jupyter" button will appear in a few minutes. You can create your own subdirectory in our project folder and copy the material:
+
+Now launch! A "Connect to jupyter" button will appear in a few minutes. 
+Then you need to open the terminal and paste these lines:
+
+```
+mkdir -p $HOME/.jupyter_checkpoints
+echo "c.FileContentsManager.checkpoints_kwargs = {'root_dir': '$HOME/.jupyter_checkpoints'}" >> ~/.jupyter/jupyter_lab_config.py
+
+source /projappl/project_465002387/DEEP_Inspection_Material_Science/workshopvenv/bin/activate
+python -m ipykernel install --user --name=python3-venv --display-name "Python 3 (venv)"
+
+```
+
+You can create your own subdirectory in our project folder and copy the material:
              
 ```cd /projappl/project_465002387/DEEP_Inspection_Material_Science/
 mkdir <my_name>
